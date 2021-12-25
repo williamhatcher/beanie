@@ -80,6 +80,35 @@ chocolates = await Product
               .find(Product.price < 5).to_list()
 ```
 
+## Search by relation / link
+
+You can filter by links to other documents.
+
+Suppose you have the following documents:
+```python
+class Company(Document):
+    name: str
+    industry: str
+    
+class Employee(Document):
+    email: str
+    name: str
+    address: str
+    company: Link[Company]
+```
+
+And you want to filter all Employees who belong to Company X, you can do so with the following code:
+
+```python
+from bson import DBRef
+
+company_employees = await Employee.find(
+    Employee.company == DBRef("Company", "name_of_company")
+    ).to_list()
+```
+
+Please note that the collection passed to DBRef must be a string, not a class type object
+
 ### Sorting
 
 Sorting can be done with the [sort](/api-documentation/query#sort) method.
